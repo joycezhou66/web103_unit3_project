@@ -1,36 +1,23 @@
-import express from 'express'
-import path from 'path'
-import favicon from 'serve-favicon'
-import dotenv from 'dotenv'
+const express = require('express');
+const eventsRoutes = require('./routes/eventsRoutes');
+const locationsRoutes = require('./routes/locationsRoutes');
 
-// import the router from your routes file
+const app = express();
+const PORT = process.env.PORT || 3000;
 
+// Middleware to parse JSON data
+app.use(express.json());
 
-dotenv.config()
+// Use the events and locations routes
+app.use('/api', eventsRoutes);
+app.use('/api', locationsRoutes);
 
-const PORT = process.env.PORT || 3000
+// Default route to check if server is running
+app.get('/', (req, res) => {
+  res.send('Welcome to the Virtual Community Space API');
+});
 
-const app = express()
-
-app.use(express.json())
-
-if (process.env.NODE_ENV === 'development') {
-    app.use(favicon(path.resolve('../', 'client', 'public', 'party.png')))
-}
-else if (process.env.NODE_ENV === 'production') {
-    app.use(favicon(path.resolve('public', 'party.png')))
-    app.use(express.static('public'))
-}
-
-// specify the api path for the server to use
-
-
-if (process.env.NODE_ENV === 'production') {
-    app.get('/*', (_, res) =>
-        res.sendFile(path.resolve('public', 'index.html'))
-    )
-}
-
+// Start the server
 app.listen(PORT, () => {
-    console.log(`server listening on http://localhost:${PORT}`)
-})
+  console.log(`Server is running on http://localhost:${PORT}`);
+});

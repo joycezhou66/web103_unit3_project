@@ -1,6 +1,5 @@
 {
   "name": "unitygridplaza",
-  "type": "module",
   "scripts": {
     "dev": "concurrently \"cd client && vite\" \"cd server && nodemon server\"",
     "start": "cd server && node server",
