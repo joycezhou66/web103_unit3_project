@@ -1,25 +1,21 @@
 const pool = require('../config/database');
 
-// Function to get all events for a specific location
-const getEventsByLocation = async (locationId) => {
-  try {
-    const result = await pool.query('SELECT * FROM events WHERE location_id = $1', [locationId]);
-    return result.rows; // Return the list of events for the specified location
-  } catch (error) {
-    console.error('Error fetching events by location:', error);
-    throw error;
-  }
-};
-
-// Function to get all events
+// Fetch all events
 const getAllEvents = async () => {
-  try {
-    const result = await pool.query('SELECT * FROM events');
-    return result.rows; // Return the list of all events
-  } catch (error) {
-    console.error('Error fetching all events:', error);
-    throw error;
-  }
+  const query = 'SELECT * FROM events';
+  const { rows } = await pool.query(query);
+  return rows;
 };
 
-module.exports = { getEventsByLocation, getAllEvents };
+// Fetch events by location ID
+const getEventsByLocation = async (locationId) => {
+  const query = 'SELECT * FROM events WHERE location_id = $1';
+  const { rows } = await pool.query(query, [locationId]);
+  return rows;
+};
+
+module.exports = {
+  getAllEvents,
+  getEventsByLocation
+};
+

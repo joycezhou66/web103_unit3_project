@@ -1,30 +1,31 @@
-// Function to fetch all events
-export const getAllEvents = async () => {
-    try {
-      const response = await fetch('/api/events');
-      if (!response.ok) {
-        throw new Error('Failed to fetch events');
-      }
-      const events = await response.json();
-      return events;
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      return [];
+const express = require('express');
+const router = express.Router();
+const pool = require('./database');
+
+// Fetch all events
+router.get('/events', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, title, event_date AS date, event_time AS time, image FROM events');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Fetch event by ID
+router.get('/events/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('SELECT id, title, event_date AS date, event_time AS time, image FROM events WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Event not found' });
     }
-  };
-  
-  // Function to fetch events by location ID
-  export const getEventsByLocation = async (locationId) => {
-    try {
-      const response = await fetch(`/api/events/location/${locationId}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch events for location ID ${locationId}`);
-      }
-      const events = await response.json();
-      return events;
-    } catch (error) {
-      console.error('Error fetching events by location:', error);
-      return [];
-    }
-  };
-  
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(`Error fetching event with ID ${id}:`, error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+module.exports = router;

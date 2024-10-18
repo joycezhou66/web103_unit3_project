@@ -1,25 +1,21 @@
 const pool = require('../config/database');
 
-// Function to get all locations
+// Fetch all locations
 const getAllLocations = async () => {
-  try {
-    const result = await pool.query('SELECT * FROM locations');
-    return result.rows; // Return the list of all locations
-  } catch (error) {
-    console.error('Error fetching locations:', error);
-    throw error;
-  }
+  const query = 'SELECT * FROM locations';
+  const { rows } = await pool.query(query);
+  return rows;
 };
 
-// Function to get a specific location by ID
+// Fetch location by ID
 const getLocationById = async (locationId) => {
-  try {
-    const result = await pool.query('SELECT * FROM locations WHERE id = $1', [locationId]);
-    return result.rows[0]; // Return the specific location
-  } catch (error) {
-    console.error('Error fetching location by ID:', error);
-    throw error;
-  }
+  const query = 'SELECT * FROM locations WHERE id = $1';
+  const { rows } = await pool.query(query, [locationId]);
+  return rows[0];
 };
 
-module.exports = { getAllLocations, getLocationById };
+module.exports = {
+  getAllLocations,
+  getLocationById
+};
+

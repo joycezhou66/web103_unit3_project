@@ -3,7 +3,6 @@ const { getAllLocations, getLocationById } = require('../controllers/locationsCo
 
 const router = express.Router();
 
-// Route to get all locations
 router.get('/locations', async (req, res) => {
   try {
     const locations = await getAllLocations();
@@ -13,7 +12,6 @@ router.get('/locations', async (req, res) => {
   }
 });
 
-// Route to get a specific location by ID
 router.get('/locations/:locationId', async (req, res) => {
   try {
     const { locationId } = req.params;
